@@ -480,7 +480,7 @@ client1.on('connect', function(err) {
               //------------------------------------------Xray1----------------------------------------------
               /*----------------------------------------------------------------------------------EOL----------------------------------------------------------------------------------*/
                    if(secEOL>=60 && CntOutEOL){
-                      fs.appendFileSync("C:/PULSE/INTERBAKE_LOGS/mex_tul_eol_interbake.log","tt="+Date.now()+",var=EOL"+",val="+CntOutEOL+"\n");
+                      fs.appendFileSync("C:/PULSE/INTERBAKE_LOGS/mex_tul_eol_INTERBAKE.log","tt="+Date.now()+",var=EOL"+",val="+CntOutEOL+"\n");
                       secEOL=0;
                     }else{
                       secEOL++;
