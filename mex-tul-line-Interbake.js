@@ -7,6 +7,7 @@ try{
       Frezzerresults = null,
       CntInFrezzer = null,
       CntOutFrezzer = null,
+      CntOutFrezzer1 = null,
       Frezzeractual = 0,
       Frezzertime = 0,
       Frezzersec = 0,
@@ -55,40 +56,40 @@ try{
       Filler2timeStop = 60, //NOTE: Timestop en segundos
       Filler2Worktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
       Filler2flagRunning = false;
-  var Xray1ct = null,
-      Xray1results = null,
-      CntInXray1 = null,
-      CntOutXray1 = null,
-      Xray1actual = 0,
-      Xray1time = 0,
-      Xray1sec = 0,
-      Xray1flagStopped = false,
-      Xray1state = 0,
-      Xray1speed = 0,
-      Xray1speedTemp = 0,
-      Xray1flagPrint = 0,
-      Xray1secStop = 0,
-      Xray1ONS = false,
-      Xray1timeStop = 60, //NOTE: Timestop en segundos
-      Xray1Worktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
-      Xray1flagRunning = false;
-      var Xray2ct = null,
-          Xray2results = null,
-          CntInXray2 = null,
-          CntOutXray2 = null,
-          Xray2actual = 0,
-          Xray2time = 0,
-          Xray2sec = 0,
-          Xray2flagStopped = false,
-          Xray2state = 0,
-          Xray2speed = 0,
-          Xray2speedTemp = 0,
-          Xray2flagPrint = 0,
-          Xray2secStop = 0,
-          Xray2ONS = false,
-          Xray2timeStop = 60, //NOTE: Timestop en segundos
-          Xray2Worktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
-          Xray2flagRunning = false;
+  var Wrapping1ct = null,
+      Wrapping1results = null,
+      CntInWrapping1 = null,
+      CntOutWrapping1 = null,
+      Wrapping1actual = 0,
+      Wrapping1time = 0,
+      Wrapping1sec = 0,
+      Wrapping1flagStopped = false,
+      Wrapping1state = 0,
+      Wrapping1speed = 0,
+      Wrapping1speedTemp = 0,
+      Wrapping1flagPrint = 0,
+      Wrapping1secStop = 0,
+      Wrapping1ONS = false,
+      Wrapping1timeStop = 60, //NOTE: Timestop en segundos
+      Wrapping1Worktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
+      Wrapping1flagRunning = false;
+      var Wrapping2ct = null,
+          Wrapping2results = null,
+          CntInWrapping2 = null,
+          CntOutWrapping2 = null,
+          Wrapping2actual = 0,
+          Wrapping2time = 0,
+          Wrapping2sec = 0,
+          Wrapping2flagStopped = false,
+          Wrapping2state = 0,
+          Wrapping2speed = 0,
+          Wrapping2speedTemp = 0,
+          Wrapping2flagPrint = 0,
+          Wrapping2secStop = 0,
+          Wrapping2ONS = false,
+          Wrapping2timeStop = 60, //NOTE: Timestop en segundos
+          Wrapping2Worktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
+          Wrapping2flagRunning = false;
   var CntOutEOL=null,
       secEOL=0;
   var publishConfig;
@@ -250,7 +251,7 @@ client1.on('connect', function(err) {
                 }
                 Filler1results = {
                   ST: Filler1state,
-                  CPQI: CntInFiller1,
+                  //CPQI: CntInFiller1,
                   CPQO: CntOutFiller1,
                   SP: Filler1speed
                 }
@@ -281,66 +282,6 @@ client1.on('connect', function(err) {
           client2.readHoldingRegisters(0, 16).then(function(resp) {
             CntInFrezzer =  joinWord(resp.register[0], resp.register[1])+CntInFrezzer1;
             CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
-            //------------------------------------------Frezzer----------------------------------------------
-                  Frezzerct = CntOutFrezzer // NOTE: igualar al contador de salida
-                  if (!FrezzerONS && Frezzerct) {
-                    FrezzerspeedTemp = Frezzerct
-                    Frezzersec = Date.now()
-                    FrezzerONS = true
-                    Frezzertime = Date.now()
-                  }
-                  if(Frezzerct > Frezzeractual){
-                    if(FrezzerflagStopped){
-                      Frezzerspeed = Frezzerct - FrezzerspeedTemp
-                      FrezzerspeedTemp = Frezzerct
-                      Frezzersec = Date.now()
-                      Frezzertime = Date.now()
-                    }
-                    FrezzersecStop = 0
-                    Frezzerstate = 1
-                    FrezzerflagStopped = false
-                    FrezzerflagRunning = true
-                  } else if( Frezzerct == Frezzeractual ){
-                    if(FrezzersecStop == 0){
-                      Frezzertime = Date.now()
-                      FrezzersecStop = Date.now()
-                    }
-                    if( ( Date.now() - ( FrezzertimeStop * 1000 ) ) >= FrezzersecStop ){
-                      Frezzerspeed = 0
-                      Frezzerstate = 2
-                      FrezzerspeedTemp = Frezzerct
-                      FrezzerflagStopped = true
-                      FrezzerflagRunning = false
-                      FrezzerflagPrint = 1
-                    }
-                  }
-                  Frezzeractual = Frezzerct
-                  if(Date.now() - 60000 * FrezzerWorktime >= Frezzersec && FrezzersecStop == 0){
-                    if(FrezzerflagRunning && Frezzerct){
-                      FrezzerflagPrint = 1
-                      FrezzersecStop = 0
-                      Frezzerspeed = Frezzerct - FrezzerspeedTemp
-                      FrezzerspeedTemp = Frezzerct
-                      Frezzersec = Date.now()
-                    }
-                  }
-                  Frezzerresults = {
-                    ST: Frezzerstate,
-                    CPQI: CntInFrezzer,
-                    CPQO: CntOutFrezzer,
-                    SP: Frezzerspeed
-                  }
-                  if (FrezzerflagPrint == 1) {
-                    for (var key in Frezzerresults) {
-                      if( Frezzerresults[key] != null && ! isNaN(Frezzerresults[key]) )
-                      //NOTE: Cambiar path
-                      fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Frezzer_INTERBAKE.log', 'tt=' + Frezzertime + ',var=' + key + ',val=' + Frezzerresults[key] + '\n')
-                    }
-                    FrezzerflagPrint = 0
-                    FrezzersecStop = 0
-                    Frezzertime = Date.now()
-                  }
-            //------------------------------------------Frezzer----------------------------------------------
             //------------------------------------------Filler2----------------------------------------------
                   Filler2ct = CntOutFiller2 // NOTE: igualar al contador de salida
                   if (!Filler2ONS && Filler2ct) {
@@ -386,7 +327,7 @@ client1.on('connect', function(err) {
                   }
                   Filler2results = {
                     ST: Filler2state,
-                    CPQI: CntInFiller2,
+                    //CPQI: CntInFiller2,
                     CPQO: CntOutFiller2,
                     SP: Filler2speed
                   }
@@ -416,68 +357,69 @@ client1.on('connect', function(err) {
         setInterval(function(){
             client3.readHoldingRegisters(0, 16).then(function(resp) {
               CntOutEOL =  joinWord(resp.register[0], resp.register[1]);
-              CntOutXray1 =  joinWord(resp.register[2], resp.register[3]);
-              CntInXray1 =  joinWord(resp.register[4], resp.register[5]);
-              //------------------------------------------Xray1----------------------------------------------
-                    Xray1ct = CntOutXray1 // NOTE: igualar al contador de salida
-                    if (!Xray1ONS && Xray1ct) {
-                      Xray1speedTemp = Xray1ct
-                      Xray1sec = Date.now()
-                      Xray1ONS = true
-                      Xray1time = Date.now()
+              CntOutWrapping1 =  joinWord(resp.register[2], resp.register[3]);
+              CntInWrapping1 =  joinWord(resp.register[4], resp.register[5]);
+              CntOutFrezzer1 = joinWord(resp.register[4], resp.register[5]); //new
+              //------------------------------------------Wrapping1----------------------------------------------
+                    Wrapping1ct = CntOutWrapping1 // NOTE: igualar al contador de salida
+                    if (!Wrapping1ONS && Wrapping1ct) {
+                      Wrapping1speedTemp = Wrapping1ct
+                      Wrapping1sec = Date.now()
+                      Wrapping1ONS = true
+                      Wrapping1time = Date.now()
                     }
-                    if(Xray1ct > Xray1actual){
-                      if(Xray1flagStopped){
-                        Xray1speed = Xray1ct - Xray1speedTemp
-                        Xray1speedTemp = Xray1ct
-                        Xray1sec = Date.now()
-                        Xray1time = Date.now()
+                    if(Wrapping1ct > Wrapping1actual){
+                      if(Wrapping1flagStopped){
+                        Wrapping1speed = Wrapping1ct - Wrapping1speedTemp
+                        Wrapping1speedTemp = Wrapping1ct
+                        Wrapping1sec = Date.now()
+                        Wrapping1time = Date.now()
                       }
-                      Xray1secStop = 0
-                      Xray1state = 1
-                      Xray1flagStopped = false
-                      Xray1flagRunning = true
-                    } else if( Xray1ct == Xray1actual ){
-                      if(Xray1secStop == 0){
-                        Xray1time = Date.now()
-                        Xray1secStop = Date.now()
+                      Wrapping1secStop = 0
+                      Wrapping1state = 1
+                      Wrapping1flagStopped = false
+                      Wrapping1flagRunning = true
+                    } else if( Wrapping1ct == Wrapping1actual ){
+                      if(Wrapping1secStop == 0){
+                        Wrapping1time = Date.now()
+                        Wrapping1secStop = Date.now()
                       }
-                      if( ( Date.now() - ( Xray1timeStop * 1000 ) ) >= Xray1secStop ){
-                        Xray1speed = 0
-                        Xray1state = 2
-                        Xray1speedTemp = Xray1ct
-                        Xray1flagStopped = true
-                        Xray1flagRunning = false
-                        Xray1flagPrint = 1
-                      }
-                    }
-                    Xray1actual = Xray1ct
-                    if(Date.now() - 60000 * Xray1Worktime >= Xray1sec && Xray1secStop == 0){
-                      if(Xray1flagRunning && Xray1ct){
-                        Xray1flagPrint = 1
-                        Xray1secStop = 0
-                        Xray1speed = Xray1ct - Xray1speedTemp
-                        Xray1speedTemp = Xray1ct
-                        Xray1sec = Date.now()
+                      if( ( Date.now() - ( Wrapping1timeStop * 1000 ) ) >= Wrapping1secStop ){
+                        Wrapping1speed = 0
+                        Wrapping1state = 2
+                        Wrapping1speedTemp = Wrapping1ct
+                        Wrapping1flagStopped = true
+                        Wrapping1flagRunning = false
+                        Wrapping1flagPrint = 1
                       }
                     }
-                    Xray1results = {
-                      ST: Xray1state,
-                      CPQI: CntInXray1,
-                      CPQO: CntOutXray1,
-                      SP: Xray1speed
+                    Wrapping1actual = Wrapping1ct
+                    if(Date.now() - 60000 * Wrapping1Worktime >= Wrapping1sec && Wrapping1secStop == 0){
+                      if(Wrapping1flagRunning && Wrapping1ct){
+                        Wrapping1flagPrint = 1
+                        Wrapping1secStop = 0
+                        Wrapping1speed = Wrapping1ct - Wrapping1speedTemp
+                        Wrapping1speedTemp = Wrapping1ct
+                        Wrapping1sec = Date.now()
+                      }
                     }
-                    if (Xray1flagPrint == 1) {
-                      for (var key in Xray1results) {
-                        if( Xray1results[key] != null && ! isNaN(Xray1results[key]) )
+                    Wrapping1results = {
+                      ST: Wrapping1state,
+                      CPQI: CntInWrapping1,
+                      CPQO: CntOutWrapping1,
+                      SP: Wrapping1speed
+                    }
+                    if (Wrapping1flagPrint == 1) {
+                      for (var key in Wrapping1results) {
+                        if( Wrapping1results[key] != null && ! isNaN(Wrapping1results[key]) )
                         //NOTE: Cambiar path
-                        fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Xray1_INTERBAKE.log', 'tt=' + Xray1time + ',var=' + key + ',val=' + Xray1results[key] + '\n')
+                        fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Wrapping1_INTERBAKE.log', 'tt=' + Wrapping1time + ',var=' + key + ',val=' + Wrapping1results[key] + '\n')
                       }
-                      Xray1flagPrint = 0
-                      Xray1secStop = 0
-                      Xray1time = Date.now()
+                      Wrapping1flagPrint = 0
+                      Wrapping1secStop = 0
+                      Wrapping1time = Date.now()
                     }
-              //------------------------------------------Xray1----------------------------------------------
+              //------------------------------------------Wrapping1----------------------------------------------
               /*----------------------------------------------------------------------------------EOL----------------------------------------------------------------------------------*/
                    if(secEOL>=60 && CntOutEOL){
                       fs.appendFileSync("C:/PULSE/INTERBAKE_LOGS/mex_tul_eol_INTERBAKE.log","tt="+Date.now()+",var=EOL"+",val="+CntOutEOL+"\n");
@@ -501,68 +443,129 @@ client1.on('connect', function(err) {
         intId4 =
           setInterval(function(){
               client4.readHoldingRegisters(0, 16).then(function(resp) {
-                CntInXray2 =  joinWord(resp.register[0], resp.register[1]);
-                CntOutXray2 =  joinWord(resp.register[2], resp.register[3]);
-                //------------------------------------------Xray2----------------------------------------------
-                      Xray2ct = CntOutXray2 // NOTE: igualar al contador de salida
-                      if (!Xray2ONS && Xray2ct) {
-                        Xray2speedTemp = Xray2ct
-                        Xray2sec = Date.now()
-                        Xray2ONS = true
-                        Xray2time = Date.now()
+                CntOutFrezzer = joinWord(resp.register[0], resp.register[1]);
+                CntInWrapping2 =  joinWord(resp.register[0], resp.register[1]);
+                CntOutWrapping2 =  joinWord(resp.register[2], resp.register[3]);
+                //------------------------------------------Frezzer----------------------------------------------
+                      Frezzerct = CntOutFrezzer+CntOutFrezzer1 // NOTE: igualar al contador de salida
+                      if (!FrezzerONS && Frezzerct) {
+                        FrezzerspeedTemp = Frezzerct
+                        Frezzersec = Date.now()
+                        FrezzerONS = true
+                        Frezzertime = Date.now()
                       }
-                      if(Xray2ct > Xray2actual){
-                        if(Xray2flagStopped){
-                          Xray2speed = Xray2ct - Xray2speedTemp
-                          Xray2speedTemp = Xray2ct
-                          Xray2sec = Date.now()
-                          Xray2time = Date.now()
+                      if(Frezzerct > Frezzeractual){
+                        if(FrezzerflagStopped){
+                          Frezzerspeed = Frezzerct - FrezzerspeedTemp
+                          FrezzerspeedTemp = Frezzerct
+                          Frezzersec = Date.now()
+                          Frezzertime = Date.now()
                         }
-                        Xray2secStop = 0
-                        Xray2state = 1
-                        Xray2flagStopped = false
-                        Xray2flagRunning = true
-                      } else if( Xray2ct == Xray2actual ){
-                        if(Xray2secStop == 0){
-                          Xray2time = Date.now()
-                          Xray2secStop = Date.now()
+                        FrezzersecStop = 0
+                        Frezzerstate = 1
+                        FrezzerflagStopped = false
+                        FrezzerflagRunning = true
+                      } else if( Frezzerct == Frezzeractual ){
+                        if(FrezzersecStop == 0){
+                          Frezzertime = Date.now()
+                          FrezzersecStop = Date.now()
                         }
-                        if( ( Date.now() - ( Xray2timeStop * 1000 ) ) >= Xray2secStop ){
-                          Xray2speed = 0
-                          Xray2state = 2
-                          Xray2speedTemp = Xray2ct
-                          Xray2flagStopped = true
-                          Xray2flagRunning = false
-                          Xray2flagPrint = 1
-                        }
-                      }
-                      Xray2actual = Xray2ct
-                      if(Date.now() - 60000 * Xray2Worktime >= Xray2sec && Xray2secStop == 0){
-                        if(Xray2flagRunning && Xray2ct){
-                          Xray2flagPrint = 1
-                          Xray2secStop = 0
-                          Xray2speed = Xray2ct - Xray2speedTemp
-                          Xray2speedTemp = Xray2ct
-                          Xray2sec = Date.now()
+                        if( ( Date.now() - ( FrezzertimeStop * 1000 ) ) >= FrezzersecStop ){
+                          Frezzerspeed = 0
+                          Frezzerstate = 2
+                          FrezzerspeedTemp = Frezzerct
+                          FrezzerflagStopped = true
+                          FrezzerflagRunning = false
+                          FrezzerflagPrint = 1
                         }
                       }
-                      Xray2results = {
-                        ST: Xray2state,
-                        CPQI: CntInXray2,
-                        CPQO: CntOutXray2,
-                        SP: Xray2speed
+                      Frezzeractual = Frezzerct
+                      if(Date.now() - 60000 * FrezzerWorktime >= Frezzersec && FrezzersecStop == 0){
+                        if(FrezzerflagRunning && Frezzerct){
+                          FrezzerflagPrint = 1
+                          FrezzersecStop = 0
+                          Frezzerspeed = Frezzerct - FrezzerspeedTemp
+                          FrezzerspeedTemp = Frezzerct
+                          Frezzersec = Date.now()
+                        }
                       }
-                      if (Xray2flagPrint == 1) {
-                        for (var key in Xray2results) {
-                          if( Xray2results[key] != null && ! isNaN(Xray2results[key]) )
+                      Frezzerresults = {
+                        ST: Frezzerstate,
+                        CPQI: CntInFrezzer,
+                        CPQO: CntOutFrezzer,
+                        SP: Frezzerspeed
+                      }
+                      if (FrezzerflagPrint == 1) {
+                        for (var key in Frezzerresults) {
+                          if( Frezzerresults[key] != null && ! isNaN(Frezzerresults[key]) )
                           //NOTE: Cambiar path
-                          fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Xray2_INTERBAKE.log', 'tt=' + Xray2time + ',var=' + key + ',val=' + Xray2results[key] + '\n')
+                          fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Frezzer_INTERBAKE.log', 'tt=' + Frezzertime + ',var=' + key + ',val=' + Frezzerresults[key] + '\n')
                         }
-                        Xray2flagPrint = 0
-                        Xray2secStop = 0
-                        Xray2time = Date.now()
+                        FrezzerflagPrint = 0
+                        FrezzersecStop = 0
+                        Frezzertime = Date.now()
                       }
-                //------------------------------------------Xray2----------------------------------------------
+                //------------------------------------------Frezzer----------------------------------------------
+                //------------------------------------------Wrapping2----------------------------------------------
+                      Wrapping2ct = CntOutWrapping2 // NOTE: igualar al contador de salida
+                      if (!Wrapping2ONS && Wrapping2ct) {
+                        Wrapping2speedTemp = Wrapping2ct
+                        Wrapping2sec = Date.now()
+                        Wrapping2ONS = true
+                        Wrapping2time = Date.now()
+                      }
+                      if(Wrapping2ct > Wrapping2actual){
+                        if(Wrapping2flagStopped){
+                          Wrapping2speed = Wrapping2ct - Wrapping2speedTemp
+                          Wrapping2speedTemp = Wrapping2ct
+                          Wrapping2sec = Date.now()
+                          Wrapping2time = Date.now()
+                        }
+                        Wrapping2secStop = 0
+                        Wrapping2state = 1
+                        Wrapping2flagStopped = false
+                        Wrapping2flagRunning = true
+                      } else if( Wrapping2ct == Wrapping2actual ){
+                        if(Wrapping2secStop == 0){
+                          Wrapping2time = Date.now()
+                          Wrapping2secStop = Date.now()
+                        }
+                        if( ( Date.now() - ( Wrapping2timeStop * 1000 ) ) >= Wrapping2secStop ){
+                          Wrapping2speed = 0
+                          Wrapping2state = 2
+                          Wrapping2speedTemp = Wrapping2ct
+                          Wrapping2flagStopped = true
+                          Wrapping2flagRunning = false
+                          Wrapping2flagPrint = 1
+                        }
+                      }
+                      Wrapping2actual = Wrapping2ct
+                      if(Date.now() - 60000 * Wrapping2Worktime >= Wrapping2sec && Wrapping2secStop == 0){
+                        if(Wrapping2flagRunning && Wrapping2ct){
+                          Wrapping2flagPrint = 1
+                          Wrapping2secStop = 0
+                          Wrapping2speed = Wrapping2ct - Wrapping2speedTemp
+                          Wrapping2speedTemp = Wrapping2ct
+                          Wrapping2sec = Date.now()
+                        }
+                      }
+                      Wrapping2results = {
+                        ST: Wrapping2state,
+                        CPQI: CntInWrapping2,
+                        CPQO: CntOutWrapping2,
+                        SP: Wrapping2speed
+                      }
+                      if (Wrapping2flagPrint == 1) {
+                        for (var key in Wrapping2results) {
+                          if( Wrapping2results[key] != null && ! isNaN(Wrapping2results[key]) )
+                          //NOTE: Cambiar path
+                          fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Wrapping2_INTERBAKE.log', 'tt=' + Wrapping2time + ',var=' + key + ',val=' + Wrapping2results[key] + '\n')
+                        }
+                        Wrapping2flagPrint = 0
+                        Wrapping2secStop = 0
+                        Wrapping2time = Date.now()
+                      }
+                //------------------------------------------Wrapping2----------------------------------------------
               });//Cierre de lectura
             },1000);
         });//Cierre de cliente
