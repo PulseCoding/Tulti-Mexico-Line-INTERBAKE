@@ -3,25 +3,25 @@ var modbus = require('jsmodbus');
 var PubNub = require('pubnub');
 try{
   var secPubNub=0;
-  var Frezzerct = null,
-      Frezzerresults = null,
-      CntInFrezzer = null,
-      CntOutFrezzer = null,
-      CntOutFrezzer1 = null,
-      Frezzeractual = 0,
-      Frezzertime = 0,
-      Frezzersec = 0,
-      FrezzerflagStopped = false,
-      Frezzerstate = 0,
-      Frezzerspeed = 0,
-      FrezzerspeedTemp = 0,
-      FrezzerflagPrint = 0,
-      FrezzersecStop = 0,
-      FrezzerONS = false,
-      FrezzertimeStop = 60, //NOTE: Timestop en segundos
-      FrezzerWorktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
-      FrezzerflagRunning = false,
-      CntInFrezzer1 = null;
+  var Tunnelct = null,
+      Tunnelresults = null,
+      CntInTunnel = null,
+      CntOutTunnel = null,
+      CntOutTunnel1 = null,
+      Tunnelactual = 0,
+      Tunneltime = 0,
+      Tunnelsec = 0,
+      TunnelflagStopped = false,
+      Tunnelstate = 0,
+      Tunnelspeed = 0,
+      TunnelspeedTemp = 0,
+      TunnelflagPrint = 0,
+      TunnelsecStop = 0,
+      TunnelONS = false,
+      TunneltimeStop = 60, //NOTE: Timestop en segundos
+      TunnelWorktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
+      TunnelflagRunning = false,
+      CntInTunnel1 = null;
   var Filler1ct = null,
       Filler1results = null,
       CntInFiller1 = null,
@@ -204,7 +204,7 @@ client1.on('connect', function(err) {
   intId1 =
     setInterval(function(){
         client1.readHoldingRegisters(0, 16).then(function(resp) {
-          CntInFrezzer1 =  joinWord(resp.register[0], resp.register[1]);
+          CntInTunnel1 =  joinWord(resp.register[0], resp.register[1]);
           CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
           //------------------------------------------Filler1----------------------------------------------
                 Filler1ct = CntOutFiller1 // NOTE: igualar al contador de salida
@@ -280,7 +280,7 @@ client1.on('connect', function(err) {
     intId2 =
       setInterval(function(){
           client2.readHoldingRegisters(0, 16).then(function(resp) {
-            CntInFrezzer =  joinWord(resp.register[0], resp.register[1])+CntInFrezzer1;
+            CntInTunnel =  joinWord(resp.register[0], resp.register[1])+CntInTunnel1;
             CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
             //------------------------------------------Filler2----------------------------------------------
                   Filler2ct = CntOutFiller2 // NOTE: igualar al contador de salida
@@ -359,7 +359,7 @@ client1.on('connect', function(err) {
               CntOutEOL =  joinWord(resp.register[0], resp.register[1]);
               CntOutWrapping1 =  joinWord(resp.register[2], resp.register[3]);
               CntInWrapping1 =  joinWord(resp.register[4], resp.register[5]);
-              CntOutFrezzer1 = joinWord(resp.register[4], resp.register[5]); //new
+              CntOutTunnel1 = joinWord(resp.register[4], resp.register[5]); //new
               //------------------------------------------Wrapping1----------------------------------------------
                     Wrapping1ct = CntOutWrapping1 // NOTE: igualar al contador de salida
                     if (!Wrapping1ONS && Wrapping1ct) {
@@ -443,69 +443,69 @@ client1.on('connect', function(err) {
         intId4 =
           setInterval(function(){
               client4.readHoldingRegisters(0, 16).then(function(resp) {
-                CntOutFrezzer = joinWord(resp.register[0], resp.register[1]);
+                CntOutTunnel = joinWord(resp.register[0], resp.register[1]);
                 CntInWrapping2 =  joinWord(resp.register[0], resp.register[1]);
                 CntOutWrapping2 =  joinWord(resp.register[2], resp.register[3]);
-                //------------------------------------------Frezzer----------------------------------------------
-                      Frezzerct = CntOutFrezzer+CntOutFrezzer1 // NOTE: igualar al contador de salida
-                      if (!FrezzerONS && Frezzerct) {
-                        FrezzerspeedTemp = Frezzerct
-                        Frezzersec = Date.now()
-                        FrezzerONS = true
-                        Frezzertime = Date.now()
+                //------------------------------------------Tunnel----------------------------------------------
+                      Tunnelct = CntOutTunnel+CntOutTunnel1 // NOTE: igualar al contador de salida
+                      if (!TunnelONS && Tunnelct) {
+                        TunnelspeedTemp = Tunnelct
+                        Tunnelsec = Date.now()
+                        TunnelONS = true
+                        Tunneltime = Date.now()
                       }
-                      if(Frezzerct > Frezzeractual){
-                        if(FrezzerflagStopped){
-                          Frezzerspeed = Frezzerct - FrezzerspeedTemp
-                          FrezzerspeedTemp = Frezzerct
-                          Frezzersec = Date.now()
-                          Frezzertime = Date.now()
+                      if(Tunnelct > Tunnelactual){
+                        if(TunnelflagStopped){
+                          Tunnelspeed = Tunnelct - TunnelspeedTemp
+                          TunnelspeedTemp = Tunnelct
+                          Tunnelsec = Date.now()
+                          Tunneltime = Date.now()
                         }
-                        FrezzersecStop = 0
-                        Frezzerstate = 1
-                        FrezzerflagStopped = false
-                        FrezzerflagRunning = true
-                      } else if( Frezzerct == Frezzeractual ){
-                        if(FrezzersecStop == 0){
-                          Frezzertime = Date.now()
-                          FrezzersecStop = Date.now()
+                        TunnelsecStop = 0
+                        Tunnelstate = 1
+                        TunnelflagStopped = false
+                        TunnelflagRunning = true
+                      } else if( Tunnelct == Tunnelactual ){
+                        if(TunnelsecStop == 0){
+                          Tunneltime = Date.now()
+                          TunnelsecStop = Date.now()
                         }
-                        if( ( Date.now() - ( FrezzertimeStop * 1000 ) ) >= FrezzersecStop ){
-                          Frezzerspeed = 0
-                          Frezzerstate = 2
-                          FrezzerspeedTemp = Frezzerct
-                          FrezzerflagStopped = true
-                          FrezzerflagRunning = false
-                          FrezzerflagPrint = 1
-                        }
-                      }
-                      Frezzeractual = Frezzerct
-                      if(Date.now() - 60000 * FrezzerWorktime >= Frezzersec && FrezzersecStop == 0){
-                        if(FrezzerflagRunning && Frezzerct){
-                          FrezzerflagPrint = 1
-                          FrezzersecStop = 0
-                          Frezzerspeed = Frezzerct - FrezzerspeedTemp
-                          FrezzerspeedTemp = Frezzerct
-                          Frezzersec = Date.now()
+                        if( ( Date.now() - ( TunneltimeStop * 1000 ) ) >= TunnelsecStop ){
+                          Tunnelspeed = 0
+                          Tunnelstate = 2
+                          TunnelspeedTemp = Tunnelct
+                          TunnelflagStopped = true
+                          TunnelflagRunning = false
+                          TunnelflagPrint = 1
                         }
                       }
-                      Frezzerresults = {
-                        ST: Frezzerstate,
-                        CPQI: CntInFrezzer,
-                        CPQO: CntOutFrezzer,
-                        SP: Frezzerspeed
+                      Tunnelactual = Tunnelct
+                      if(Date.now() - 60000 * TunnelWorktime >= Tunnelsec && TunnelsecStop == 0){
+                        if(TunnelflagRunning && Tunnelct){
+                          TunnelflagPrint = 1
+                          TunnelsecStop = 0
+                          Tunnelspeed = Tunnelct - TunnelspeedTemp
+                          TunnelspeedTemp = Tunnelct
+                          Tunnelsec = Date.now()
+                        }
                       }
-                      if (FrezzerflagPrint == 1) {
-                        for (var key in Frezzerresults) {
-                          if( Frezzerresults[key] != null && ! isNaN(Frezzerresults[key]) )
+                      Tunnelresults = {
+                        ST: Tunnelstate,
+                        CPQI: CntInTunnel,
+                        CPQO: CntOutTunnel,
+                        SP: Tunnelspeed
+                      }
+                      if (TunnelflagPrint == 1) {
+                        for (var key in Tunnelresults) {
+                          if( Tunnelresults[key] != null && ! isNaN(Tunnelresults[key]) )
                           //NOTE: Cambiar path
-                          fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Frezzer_INTERBAKE.log', 'tt=' + Frezzertime + ',var=' + key + ',val=' + Frezzerresults[key] + '\n')
+                          fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Tunnel_INTERBAKE.log', 'tt=' + Tunneltime + ',var=' + key + ',val=' + Tunnelresults[key] + '\n')
                         }
-                        FrezzerflagPrint = 0
-                        FrezzersecStop = 0
-                        Frezzertime = Date.now()
+                        TunnelflagPrint = 0
+                        TunnelsecStop = 0
+                        Tunneltime = Date.now()
                       }
-                //------------------------------------------Frezzer----------------------------------------------
+                //------------------------------------------Tunnel----------------------------------------------
                 //------------------------------------------Wrapping2----------------------------------------------
                       Wrapping2ct = CntOutWrapping2 // NOTE: igualar al contador de salida
                       if (!Wrapping2ONS && Wrapping2ct) {
