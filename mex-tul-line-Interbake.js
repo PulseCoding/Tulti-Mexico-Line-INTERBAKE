@@ -207,7 +207,7 @@ client1.on('connect', function(err) {
           CntInTunnel1 =  joinWord(resp.register[0], resp.register[1]);
           CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
           //------------------------------------------Filler1----------------------------------------------
-                Filler1ct = CntOutFiller1 // NOTE: igualar al contador de salida
+                Filler1ct = CntInTunnel1 //CntOutFiller1 // NOTE: igualar al contador de salida
                 if (!Filler1ONS && Filler1ct) {
                   Filler1speedTemp = Filler1ct
                   Filler1sec = Date.now()
@@ -283,7 +283,7 @@ client1.on('connect', function(err) {
             CntInTunnel =  joinWord(resp.register[0], resp.register[1])+CntInTunnel1;
             CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
             //------------------------------------------Filler2----------------------------------------------
-                  Filler2ct = CntOutFiller2 // NOTE: igualar al contador de salida
+                  Filler2ct = joinWord(resp.register[0], resp.register[1]) //CntOutFiller2 // NOTE: igualar al contador de salida
                   if (!Filler2ONS && Filler2ct) {
                     Filler2speedTemp = Filler2ct
                     Filler2sec = Date.now()
