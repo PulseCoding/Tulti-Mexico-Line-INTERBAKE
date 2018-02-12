@@ -252,7 +252,7 @@ client1.on('connect', function(err) {
                 Filler1results = {
                   ST: Filler1state,
                   //CPQI: CntInFiller1,
-                  CPQO: CntOutFiller1,
+                  CPQO: CntInTunnel1,//CntOutFiller1,
                   SP: Filler1speed
                 }
                 if (Filler1flagPrint == 1) {
@@ -328,7 +328,7 @@ client1.on('connect', function(err) {
                   Filler2results = {
                     ST: Filler2state,
                     //CPQI: CntInFiller2,
-                    CPQO: CntOutFiller2,
+                    CPQO: CntInTunnel,//CntOutFiller2,
                     SP: Filler2speed
                   }
                   if (Filler2flagPrint == 1) {
