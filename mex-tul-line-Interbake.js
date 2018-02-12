@@ -328,7 +328,7 @@ client1.on('connect', function(err) {
                   Filler2results = {
                     ST: Filler2state,
                     //CPQI: CntInFiller2,
-                    CPQO: CntInTunnel,//CntOutFiller2,
+                    CPQO: joinWord(resp.register[0], resp.register[1]),//CntOutFiller2,
                     SP: Filler2speed
                   }
                   if (Filler2flagPrint == 1) {
