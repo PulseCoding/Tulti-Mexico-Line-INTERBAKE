@@ -492,7 +492,7 @@ client1.on('connect', function(err) {
                       Tunnelresults = {
                         ST: Tunnelstate,
                         CPQI: CntInTunnel,
-                        CPQO: CntOutTunnel,
+                        CPQO: CntOutTunnel+CntOutTunnel1,
                         SP: Tunnelspeed
                       }
                       if (TunnelflagPrint == 1) {
