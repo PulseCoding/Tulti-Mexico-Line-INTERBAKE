@@ -414,7 +414,7 @@ try {
           }
           Xray1results = {
             ST: Wrapping1state,
-            CPQI: CntOutWrapping1,
+            CPQO: CntOutWrapping1,
             SP: Wrapping1speed
           }
           if (Wrapping1flagPrint == 1) {
@@ -570,7 +570,7 @@ try {
           }
           Xray2results = {
             ST: Wrapping2state,
-            CPQI: CntOutWrapping2,
+            CPQO: CntOutWrapping2,
             SP: Wrapping2speed
           }
           if (Wrapping2flagPrint == 1) {
