@@ -22,6 +22,7 @@ try {
     TunnelWorktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
     TunnelflagRunning = false,
     CntInTunnel1 = null,
+    TunneldeltaRejected = null,
     TunnelRejectFlag = false,
     TunnelReject,
     TunnelVerify = (function(){
