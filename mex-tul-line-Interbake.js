@@ -21,7 +21,26 @@ try {
     TunneltimeStop = 60, //NOTE: Timestop en segundos
     TunnelWorktime = 0.99, //NOTE: Intervalo de tiempo en minutos para actualizar el log
     TunnelflagRunning = false,
-    CntInTunnel1 = null;
+    CntInTunnel1 = null,
+    TunnelRejectFlag = false,
+    TunnelReject,
+    TunnelVerify = (function(){
+        try{
+          TunnelReject = fs.readFileSync('TunnelRejected.json')
+          if(TunnelReject.toString().indexOf('}') > 0 && TunnelReject.toString().indexOf('{\"rejected\":') != -1){
+            TunnelReject = JSON.parse(TunnelReject)
+          }else{
+            throw 12121212
+          }
+        }catch(err){
+          if(err.code == 'ENOENT' || err == 12121212){
+            fs.writeFileSync('TunnelRejected.json','{"rejected":0}') //NOTE: Change the object to what it usually is.
+            TunnelReject = {
+              rejected : 0
+            }
+          }
+        }
+  })();
   var Filler1ct = null,
     Filler1results = null,
     CntInFiller1 = null,
@@ -472,6 +491,8 @@ try {
               Tunnelspeed = Tunnelct - TunnelspeedTemp
               TunnelspeedTemp = Tunnelct
               Tunnelsec = Date.now()
+              TunneldeltaRejected = null
+              TunnelRejectFlag = false
               Tunneltime = Date.now()
             }
             TunnelsecStop = 0
@@ -489,6 +510,14 @@ try {
               TunnelspeedTemp = Tunnelct
               TunnelflagStopped = true
               TunnelflagRunning = false
+              if(CntInTunnel - CntOutTunnel + CntOutTunnel1 - TunnelReject.rejected != 0 && ! TunnelRejectFlag){
+                     TunneldeltaRejected = CntInTunnel - CntOutTunnel + CntOutTunnel1 - TunnelReject.rejected
+                     TunnelReject.rejected = CntInTunnel - CntOutTunnel + CntOutTunnel1
+                     fs.writeFileSync('TunnelRejected.json','{"rejected": ' + TunnelReject.rejected + '}')
+                     TunnelRejectFlag = true
+                   }else{
+                     TunneldeltaRejected = null
+            }
               TunnelflagPrint = 1
             }
           }
@@ -506,6 +535,7 @@ try {
             ST: Tunnelstate,
             CPQI: CntInTunnel,
             CPQO: CntOutTunnel + CntOutTunnel1,
+            CPQR : TunneldeltaRejected,
             SP: Tunnelspeed
           }
           if (TunnelflagPrint == 1) {
