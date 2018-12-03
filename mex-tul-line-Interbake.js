@@ -228,9 +228,10 @@ try {
       setInterval(function() {
         client1.readHoldingRegisters(0, 16).then(function(resp) {
           CntInTunnel1 = joinWord(resp.register[0], resp.register[1]);
-          CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
+          //CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
+          CntOutFiller1 = joinWord(resp.register[0], resp.register[1]);
           //------------------------------------------Filler1----------------------------------------------
-          Filler1ct = CntInTunnel1 //CntOutFiller1 // NOTE: igualar al contador de salida
+          Filler1ct = CntOutFiller1 //CntOutFiller1 // NOTE: igualar al contador de salida
           if (!Filler1ONS && Filler1ct) {
             Filler1speedTemp = Filler1ct
             Filler1sec = Date.now()
@@ -304,9 +305,10 @@ try {
       setInterval(function() {
         client2.readHoldingRegisters(0, 16).then(function(resp) {
           CntInTunnel = joinWord(resp.register[0], resp.register[1]) + CntInTunnel1;
-          CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
+          //CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
+          CntOutFiller2 = joinWord(resp.register[0], resp.register[1]);
           //------------------------------------------Filler2----------------------------------------------
-          Filler2ct = joinWord(resp.register[0], resp.register[1]) //CntOutFiller2 // NOTE: igualar al contador de salida
+          Filler2ct = CntOutFiller2 //CntOutFiller2 // NOTE: igualar al contador de salida
           if (!Filler2ONS && Filler2ct) {
             Filler2speedTemp = Filler2ct
             Filler2sec = Date.now()
@@ -380,8 +382,8 @@ try {
       setInterval(function() {
         client3.readHoldingRegisters(0, 16).then(function(resp) {
           CntOutEOL = joinWord(resp.register[0], resp.register[1]);
-          CntOutWrapping1 = joinWord(resp.register[2], resp.register[3]);
-          CntInWrapping1 = joinWord(resp.register[4], resp.register[5]);
+          CntOutWrapping1 = joinWord(resp.register[2], resp.register[3]); //Xray1 In
+          CntInWrapping1 = joinWord(resp.register[4], resp.register[5]);  //Wrapping 1 In
           CntOutTunnel1 = joinWord(resp.register[4], resp.register[5]); //new
           //------------------------------------------Wrapping1----------------------------------------------
           Wrapping1ct = CntOutWrapping1 // NOTE: igualar al contador de salida
@@ -476,11 +478,11 @@ try {
     intId4 =
       setInterval(function() {
         client4.readHoldingRegisters(0, 16).then(function(resp) {
-          CntOutTunnel = joinWord(resp.register[0], resp.register[1]);
+          CntOutTunnel = joinWord(resp.register[0], resp.register[1])+ CntOutTunnel1 ;
           CntInWrapping2 = joinWord(resp.register[0], resp.register[1]);
-          CntOutWrapping2 = joinWord(resp.register[2], resp.register[3]);
+          CntOutWrapping2 = joinWord(resp.register[2], resp.register[3]); //Xray 2 in
           //------------------------------------------Tunnel----------------------------------------------
-          Tunnelct = CntOutTunnel + CntOutTunnel1 // NOTE: igualar al contador de salida
+          Tunnelct = CntOutTunnel // NOTE: igualar al contador de salida
           if (!TunnelONS && Tunnelct) {
             TunnelspeedTemp = Tunnelct
             Tunnelsec = Date.now()
@@ -535,7 +537,7 @@ try {
           Tunnelresults = {
             ST: Tunnelstate,
             CPQI: CntInTunnel,
-            CPQO: CntOutTunnel + CntOutTunnel1,
+            CPQO: CntOutTunnel,
             CPQR : TunneldeltaRejected,
             SP: Tunnelspeed
           }
