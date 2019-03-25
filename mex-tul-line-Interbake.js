@@ -6,6 +6,7 @@ try {
   var Tunnelct = null,
     Tunnelresults = null,
     CntInTunnel = null,
+    CntInTunnel20 = 0,
     CntOutTunnel = null,
     CntOutTunnel1 = null,
     Tunnelactual = 0,
@@ -621,12 +622,13 @@ try {
     clearInterval(intId4);
   });
   function getRejects() {
-    var TunnelDif = CntInTunnel - CntOutTunnel
+    CntInTunnel20=CntInTunnel
+    var TunnelDif = CntInTunnel20 - CntOutTunnel
     fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Tunnel_INTERBAKE.log', 'tt=' + Date.now() + ',var=CPQR,val=' + eval(TunnelDif - TunnelReject.rejected) + '\n')
     TunnelReject.rejected = TunnelDif
     fs.writeFileSync('TunnelRejected.json', '{"rejected": ' + TunnelReject.rejected + '}')
   }
-  setTimeout(getRejects, 60000);
+  setTimeout(getRejects, 40000);
   var storeReject = setInterval(getRejects, 1740000);
 } catch (err) {
   fs.appendFileSync("error_interbake.log", err + '\n');
