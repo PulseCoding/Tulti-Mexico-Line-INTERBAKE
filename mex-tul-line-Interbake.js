@@ -228,8 +228,7 @@ try {
       setInterval(function() {
         client1.readHoldingRegisters(0, 16).then(function(resp) {
           CntInTunnel1 = joinWord(resp.register[0], resp.register[1]);
-          //CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
-          CntOutFiller1 = joinWord(resp.register[0], resp.register[1]);
+          CntOutFiller1 = joinWord(resp.register[2], resp.register[3]);
           //------------------------------------------Filler1----------------------------------------------
           Filler1ct = CntOutFiller1 //CntOutFiller1 // NOTE: igualar al contador de salida
           if (!Filler1ONS && Filler1ct) {
@@ -275,7 +274,6 @@ try {
           }
           Filler1results = {
             ST: Filler1state,
-            //CPQI: CntInFiller1,
             CPQO: CntOutFiller1,
             SP: Filler1speed
           }
@@ -305,8 +303,7 @@ try {
       setInterval(function() {
         client2.readHoldingRegisters(0, 16).then(function(resp) {
           CntInTunnel = joinWord(resp.register[0], resp.register[1]) + CntInTunnel1;
-          //CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
-          CntOutFiller2 = joinWord(resp.register[0], resp.register[1]);
+          CntOutFiller2 = joinWord(resp.register[2], resp.register[3]);
           //------------------------------------------Filler2----------------------------------------------
           Filler2ct = CntOutFiller2 //CntOutFiller2 // NOTE: igualar al contador de salida
           if (!Filler2ONS && Filler2ct) {
@@ -352,7 +349,6 @@ try {
           }
           Filler2results = {
             ST: Filler2state,
-            //CPQI: CntInFiller2,
             CPQO: CntOutFiller2,
             SP: Filler2speed
           }
@@ -431,7 +427,7 @@ try {
           Wrapping1results = {
             ST: Wrapping1state,
             CPQI: CntInWrapping1,
-            //CPQO: CntOutWrapping1,
+            CPQO: CntOutWrapping1,
             SP: Wrapping1speed
           }
           Xray1results = {
@@ -508,19 +504,11 @@ try {
               TunnelsecStop = Date.now()
             }
             if ((Date.now() - (TunneltimeStop * 1000)) >= TunnelsecStop) {
-              Tunnelspeed = 0
+              //Tunnelspeed = 0
               Tunnelstate = 2
               TunnelspeedTemp = Tunnelct
               TunnelflagStopped = true
               TunnelflagRunning = false
-              if(CntInTunnel - CntOutTunnel + CntOutTunnel1 - TunnelReject.rejected != 0 && ! TunnelRejectFlag){
-                     TunneldeltaRejected = CntInTunnel - CntOutTunnel + CntOutTunnel1 - TunnelReject.rejected
-                     TunnelReject.rejected = CntInTunnel - CntOutTunnel + CntOutTunnel1
-                     fs.writeFileSync('TunnelRejected.json','{"rejected": ' + TunnelReject.rejected + '}')
-                     TunnelRejectFlag = true
-                   }else{
-                     TunneldeltaRejected = null
-            }
               TunnelflagPrint = 1
             }
           }
@@ -538,7 +526,6 @@ try {
             ST: Tunnelstate,
             CPQI: CntInTunnel,
             CPQO: CntOutTunnel,
-            CPQR : TunneldeltaRejected,
             SP: Tunnelspeed
           }
           if (TunnelflagPrint == 1) {
@@ -603,6 +590,7 @@ try {
           }
           Xray2results = {
             ST: Wrapping2state,
+            CPQI: CntInWrapping2,
             CPQO: CntOutWrapping2,
             SP: Wrapping2speed
           }
@@ -632,6 +620,14 @@ try {
   client4.on('close', function() {
     clearInterval(intId4);
   });
+  function getRejects() {
+    var TunnelDif = CntInTunnel - CntOutTunnel
+    fs.appendFileSync('C:/Pulse/INTERBAKE_LOGS/mex_tul_Tunnel_INTERBAKE.log', 'tt=' + Date.now() + ',var=CPQR,val=' + eval(TunnelDif - TunnelReject.rejected) + '\n')
+    TunnelReject.rejected = TunnelDif
+    fs.writeFileSync('TunnelRejected.json', '{"rejected": ' + TunnelReject.rejected + '}')
+  }
+  setTimeout(getRejects, 60000);
+  var storeReject = setInterval(getRejects, 1740000);
 } catch (err) {
   fs.appendFileSync("error_interbake.log", err + '\n');
 }
