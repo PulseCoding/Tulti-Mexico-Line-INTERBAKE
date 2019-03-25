@@ -428,7 +428,6 @@ try {
           Wrapping1results = {
             ST: Wrapping1state,
             CPQI: CntInWrapping1,
-            CPQO: CntOutWrapping1,
             SP: Wrapping1speed
           }
           Xray1results = {
@@ -591,7 +590,6 @@ try {
           }
           Xray2results = {
             ST: Wrapping2state,
-            CPQI: CntInWrapping2,
             CPQO: CntOutWrapping2,
             SP: Wrapping2speed
           }
