@@ -379,7 +379,7 @@ try {
       setInterval(function() {
         client3.readHoldingRegisters(0, 16).then(function(resp) {
           CntOutEOL = joinWord(resp.register[0], resp.register[1]);
-          CntOutWrapping1 = joinWord(resp.register[2], resp.register[3]); //Xray1 In
+          CntOutWrapping1 = joinWord(resp.register[2], resp.register[3]); //Xray1 Out
           CntInWrapping1 = joinWord(resp.register[4], resp.register[5]);  //Wrapping 1 In
           CntOutTunnel1 = joinWord(resp.register[4], resp.register[5]); //new
           //------------------------------------------Wrapping1----------------------------------------------
@@ -476,7 +476,7 @@ try {
         client4.readHoldingRegisters(0, 16).then(function(resp) {
           CntOutTunnel = joinWord(resp.register[0], resp.register[1])+ CntOutTunnel1 ;
           CntInWrapping2 = joinWord(resp.register[0], resp.register[1]);
-          CntOutWrapping2 = joinWord(resp.register[2], resp.register[3]); //Xray 2 in
+          CntOutWrapping2 = joinWord(resp.register[2], resp.register[3]); //Xray 2 Out
           //------------------------------------------Tunnel----------------------------------------------
           Tunnelct = CntOutTunnel // NOTE: igualar al contador de salida
           if (!TunnelONS && Tunnelct) {
